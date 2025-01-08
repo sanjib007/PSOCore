@@ -1,0 +1,437 @@
+﻿@page "/transactions"
+
+
+<PageTitle>Transactions</PageTitle>
+
+
+<!-- [ Main Content ] start -->
+<div class="pc-container">
+    <div class="pc-content">
+
+        <!-- [ breadcrumb ] end -->
+        <!-- [ Main Content ] start -->
+        <div class="row">
+            <!-- [ sample-page ] start -->
+            <div class="col-sm-12">
+
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Transaction List</h5>
+                    </div>
+
+                    <div class="card-body">
+
+                        <EditForm Model="model" class="" OnValidSubmit="Submit">
+                            <div class="row">
+                                <div class="col">
+                                    <InputText placeholder="TrxId / OrderId" class="form-control" @bind-Value=model.TransactionId />
+                                </div>
+
+                                <div class="col">
+                                    <InputText placeholder="Start Date" class="form-control" @bind-Value=model.StartDate onfocus="(this.type='date')" onblur="if(!this.value)this.type='text'" />
+                                    @* <InputText placeholder="Start Date" class="form-control" @bind-Value=model.StartDate @oninput="OnStartDateChange" /> *@
+                                    @* <InputDate placeholder="Select Start Date" class="form-control" @bind-Value=model.StartDate @onchange="OnStartDateChange" /> *@
+
+
+                                </div>
+                                <div class="col">
+                                    <InputText placeholder="End Date" class="form-control" @bind-Value=model.EndDate onfocus="(this.type='date')" onblur="if(!this.value)this.type='text'" /> @* min="2025-03-22" *@
+                                </div>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col">
+                                    <InputSelect class="form-select" @bind-Value="model!.TransactionStatus">
+                                        <option value="">
+                                            Select Transaction Status
+                                        </option>
+                                        <option checked="@(model!.TransactionStatus == "Authorized")"
+                                                value="Authorized">
+                                            Authorized
+                                        </option>
+                                        <option checked="@(model!.TransactionStatus == "Settled")"
+                                                value="Settled">
+                                            Settled
+                                        </option>
+                                        <option checked="@(model!.TransactionStatus == "Refunded")"
+                                                value="Refunded">
+                                            Refunded
+                                        </option>
+                                        <option checked="@(model!.TransactionStatus == "Voided")"
+                                                value="Voided">
+                                            Voided
+                                        </option>
+                                        <option checked="@(model!.TransactionStatus == "Fail")"
+                                                value="Fail">
+                                            Fail
+                                        </option>
+                                    </InputSelect>
+
+                                </div>
+
+                                <div class="col d-grid gap-2">
+                                    <button type="submit" class="btn btn-primary">Search</button>
+                                </div>
+                                <div class="col d-grid gap-2">
+                                    <button type="button" class="btn btn-light-secondary" @onclick="ClearSearch">Clear</button>
+                                </div>
+                            </div>
+                        </EditForm>
+                        <div class="table-responsive">
+                            <table class="table table-xs table-bordered table-hover mt-4">
+                                <thead>
+                                    <tr>
+                                        <th scope="col"> Trx Id</th>
+                                        <th scope="col"> Order Id</th>
+                                        <th scope="col"> Trx Amount</th>
+                                        <th scope="col"> Trx Date</th>
+                                        <th scope="col"> Channel</th>
+                                        <th scope="col"> Trx Type</th>
+                                        <th scope="col"> Trx Status</th>
+                                        <th scope="col"> Settlement Status</th>
+                                        <th scope="col"> Settlement Date</th>
+                                        <th scope="col"> Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (list == null)
+                                    {
+                                        <p><em>Loading...</em></p>
+                                    }
+                                    else
+                                    {
+                                        if (list.Count > 0)
+                                        {
+                                            foreach (var item in list)
+                                            {
+                                                <tr>
+                                                    <td>@item.transactionId</td>
+                                                    <td>@item.transactionOrderId</td>
+                                                    <td>@item.transactionAmount</td>
+                                                    <td>@item.transactionDate</td>
+                                                    <td>@item.channel</td>
+                                                    <td>@item.transactionType</td>
+
+                                                    <td>
+                                                        @if (@item.transactionStatus == @TxnStatus.Authorized.ToString())
+                                                        {
+                                                            <span class="badge bg-light-success">@item.transactionStatus</span>
+                                                        }
+                                                        else if (@item.transactionStatus == @TxnStatus.Fail.ToString())
+                                                        {
+                                                            <span class="badge bg-light-danger">@item.transactionStatus</span>
+                                                        }
+                                                        else if (@item.transactionStatus == @TxnStatus.Voided.ToString())
+                                                        {
+                                                            <span class="badge bg-light-warning">@item.transactionStatus</span>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span class="badge bg-light-info">@item.transactionStatus</span>
+                                                        }
+
+                                                    </td>
+                                                    <td>
+
+                                                        @if (item.transactionType != TransactionType.Void.ToString() && (@item.transactionStatus == @TxnStatus.Authorized.ToString() || @item.transactionStatus == @TxnStatus.Settled.ToString()))
+                                                        {
+                                                            @if (item.isRequestedForSettlement == true)
+                                                            {
+                                                                @if (string.IsNullOrEmpty(@item.settlementStatus))
+                                                                {
+                                                                    <span class="badge bg-light-info">Requested</span>
+
+
+                                                                }
+                                                                else
+                                                                {
+                                                                    <span class="badge bg-light-info">@item.settlementStatus</span>
+                                                                }
+                                                            }
+                                                            else
+                                                            {
+
+                                                                @if (string.IsNullOrEmpty(@item.settlementStatus))
+                                                                {
+                                                                    <span class="badge bg-light-info">Not Requested</span>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <span class="badge bg-light-info">@item.settlementStatus</span>
+                                                                }
+                                                            }
+                                                        }
+
+                                                    </td>
+                                                    <td>
+                                                        @if (item.transactionType != TransactionType.Void.ToString() && (@item.transactionStatus == @TxnStatus.Authorized.ToString() || @item.transactionStatus == @TxnStatus.Settled.ToString()))
+                                                        {
+                                                            @if (@item.settlementDate == null)
+                                                            {
+                                                                @* <span class="badge bg-light-success">Not Requested</span> *@
+                                                            }
+                                                            else
+                                                            {
+                                                                <span class="badge bg-light-info">@item.settlementDate</span>
+                                                            }
+                                                        }
+
+                                                    </td>
+                                                    <td>
+                                                        @if (item.transactionType == TransactionType.Payment.ToString())
+                                                        {
+
+                                                            @if (item.transactionStatus == @TxnStatus.Authorized.ToString())
+                                                            {
+                                                                if (item.isRequestedForSettlement == false)
+                                                                {
+                                                                    <button type="button" class="btn btn-sm btn-outline-success" @onclick="() => DoSettlementRequest(item)">Settlemt</button>
+                                                                    <button type="button" class="btn btn-sm btn-outline-danger" @onclick="() => DoVoid(item)">Void</button>
+                                                                }
+
+                                                            }
+                                                            else if (item.transactionStatus == @TxnStatus.Settled.ToString())
+                                                            {
+                                                                <button type="button" class="btn btn-sm btn-outline-info" @onclick="() => DoRefund(item)">Refund</button>
+                                                            }
+                                                        }
+
+                                                    </td>
+                                                </tr>
+
+                                            }
+                                        }
+                                        @*  else
+                                    {
+                                    <h5>No data</h5>
+                                    } *@
+                                    }
+
+
+                                </tbody>
+                            </table>
+                        </div>
+                        @if (list != null)
+                        {
+                            @if (list.Count > 0)
+                            {
+                                <div class="row mt-1">
+                                    <div class="col-3">
+                                        Showing @pageSize of @totalCount entries
+                                    </div>
+                                    <div class="col-9">
+                                        <Pagination Size="PaginationSize.Small" ActivePageNumber="@currentPageNumber" TotalPages="@totalPages" PageChanged="OnPageChangedAsync" Alignment="Alignment.End" Class="pagination" />
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <h5>No data</h5>
+                            }
+                        }
+
+                    </div>
+                </div>
+
+            </div>
+            <!-- [ sample-page ] end -->
+        </div>
+        <!-- [ Main Content ] end -->
+    </div>
+</div>
+
+
+<!-- [ Main Content ] end -->
+@* void modal *@
+<Modal @ref="voidModal" Title="Warning" IsVerticallyCentered="true">
+    <BodyTemplate>
+        Are you sure you want to Void  @voidTransaction transaction?
+    </BodyTemplate>
+    <FooterTemplate>
+        <Button Color="ButtonColor.Primary" @onclick="ConfirmDoVoid">Ok</Button>
+        <Button Color="ButtonColor.Secondary" @onclick="OnHideVoidModalClick">Close</Button>
+    </FooterTemplate>
+</Modal>
+
+@* refund modal *@
+<Modal @ref="refundModal" Title="Warning" IsVerticallyCentered="true">
+    <BodyTemplate>
+        Are you sure you want to Refund  @refundTransaction transaction?
+    </BodyTemplate>
+    <FooterTemplate>
+        <Button Color="ButtonColor.Primary" @onclick="ConfirmDoRefund">Ok</Button>
+        <Button Color="ButtonColor.Secondary" @onclick="OnHideRefundModalClick">Close</Button>
+    </FooterTemplate>
+</Modal>
+
+@* settlement modal *@
+<Modal @ref="settlementModal" Title="Warning" IsVerticallyCentered="true">
+    <BodyTemplate>
+        Are you sure you want to Settle @settlementTransaction transaction?
+    </BodyTemplate>
+    <FooterTemplate>
+        <Button Color="ButtonColor.Primary" @onclick="ConfirmDoSettlementRequest">Ok</Button>
+        <Button Color="ButtonColor.Secondary" @onclick="OnHideSettlementRequestModalClick">Close</Button>
+    </FooterTemplate>
+</Modal>
+
+@inject ITransactionService _transactionService
+@code {
+    [Inject] protected ToastService ToastService { get; set; } = default!;
+    int currentPageNumber = 1;
+    int totalPages = 0;
+    int totalCount = 0;
+    int pageSize = 10;
+    string voidTransaction;
+    string refundTransaction;
+    string settlementTransaction;
+
+    private TransactionSearchRequest model { get; set; } = new();
+
+    private Modal voidModal = default!;
+    private Modal refundModal = default!;
+    private Modal settlementModal = default!;
+
+    List<ToastMessage> messages = new List<ToastMessage>();
+    private List<TransactionReportReponseDataList>? list;
+    protected override async void OnInitialized()
+    {
+        await TransactionList();
+    }
+
+    private void NameChanged(string value)
+    {
+        var selectedDate = value.ToString();
+    }
+    private void OnStartDateChange(ChangeEventArgs e)
+    {
+        // Handle the date selection event here
+        var selectedDate = e.Value.ToString();
+        // Do something with the selectedDate
+    }
+    private async Task OnHideVoidModalClick()
+    {
+        await voidModal.HideAsync();
+    }
+    private async Task OnHideRefundModalClick()
+    {
+        await refundModal.HideAsync();
+    }
+    private async Task OnHideSettlementRequestModalClick()
+    {
+        await settlementModal.HideAsync();
+    }
+
+    private async Task TransactionList()
+    {
+
+        // var response = await _transactionService.GetAllTransactions(model.TransactionId, model.StartDate, model.EndDate, model.TransactionStatus, currentPageNumber, pageSize);
+        var response = await _transactionService.GetAllTransactions(model.TransactionId, model.StartDate, model.EndDate, model.TransactionStatus, currentPageNumber, pageSize);
+        if (response.statusCode == 200)
+        {
+            // ToastService.Notify(new(ToastType.Success, $"{response.message}"));
+            list = response.data.list;
+            totalCount = response.data.total;
+            totalPages = Convert.ToInt32(Math.Ceiling(Convert.ToDecimal(response.data.total) / Convert.ToDecimal(pageSize)));
+            this.StateHasChanged();
+        }
+        else
+        {
+            ToastService.Notify(new(ToastType.Danger, $"{response.message}"));
+            this.StateHasChanged();
+        }
+    }
+
+
+    private async Task Submit()
+    {
+        await TransactionList();
+    }
+    private async Task ClearSearch()
+    {
+        model = new TransactionSearchRequest();
+        await TransactionList();
+    }
+    private async Task DoVoid(TransactionReportReponseDataList data)
+    {
+
+        voidTransaction = data.transactionId;
+        await voidModal.ShowAsync();
+    }
+    private async Task ConfirmDoVoid()
+    {
+        var response = await _transactionService.DoVoid(voidTransaction);
+        if (response.statusCode == 200)
+        {
+            this.StateHasChanged();
+            await voidModal.HideAsync();
+            ToastService.Notify(new(ToastType.Success, $"{response.message}"));
+            await TransactionList();
+        }
+        else
+        {
+            ToastService.Notify(new(ToastType.Danger, $"{response.message}"));
+        }
+
+    }
+
+    private async Task DoRefund(TransactionReportReponseDataList data)
+    {
+        refundTransaction = data.transactionId;
+        await refundModal.ShowAsync();
+    }
+    private async Task ConfirmDoRefund()
+    {
+        var response = await _transactionService.DoRefund(refundTransaction);
+        if (response.statusCode == 200)
+        {
+            this.StateHasChanged();
+            await refundModal.HideAsync();
+            ToastService.Notify(new(ToastType.Success, $"{response.message}"));
+            await TransactionList();
+        }
+        else
+        {
+            ToastService.Notify(new(ToastType.Danger, $"{response.message}"));
+        }
+    }
+
+
+
+    private async Task DoSettlementRequest(TransactionReportReponseDataList data)
+    {
+        settlementTransaction = data.transactionId;
+        await settlementModal.ShowAsync();
+    }
+    private async Task ConfirmDoSettlementRequest()
+    {
+        var response = await _transactionService.SettlementRequest(settlementTransaction);
+        if (response.statusCode == 200)
+        {
+            this.StateHasChanged();
+            await settlementModal.HideAsync();
+            ToastService.Notify(new(ToastType.Success, $"{response.message}"));
+            await TransactionList();
+        }
+        else
+        {
+            ToastService.Notify(new(ToastType.Danger, $"{response.message}"));
+        }
+    }
+    private async Task OnPageChangedAsync(int newPageNumber)
+    {
+        currentPageNumber = newPageNumber;
+        await TransactionList();
+    }
+    public class TransactionSearchRequest
+    {
+        public string? TransactionId { get; set; }
+        public string? TransactionStatus { get; set; }
+        public string? Channel { get; set; }
+        public string? StartDate { get; set; }
+        // public DateTime? StartDate { get; set; }
+        public string? EndDate { get; set; }
+        // public DateTime? EndDate { get; set; }
+    }
+
+
+}

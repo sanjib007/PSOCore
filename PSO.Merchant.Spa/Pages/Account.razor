@@ -1,0 +1,282 @@
+﻿@page "/account"
+
+<PageTitle>Account</PageTitle>
+
+<!-- [ Main Content ] start -->
+<div class="pc-container">
+    <div class="pc-content">
+
+        <!-- [ Main Content ] start -->
+        <div class="row">
+            <!-- [ sample-page ] start -->
+            <div class="col-sm-12">
+                @if (data == null)
+                {
+                    <p><em>Loading...</em></p>
+                }
+                else
+                {
+
+                    <div class="row">
+                        <div class="col-lg-5 col-xxl-3">
+                            <div class="card overflow-hidden">
+                                <div class="card-body position-relative">
+                                    <div class="text-center mt-3">
+                                        <div class="chat-avtar d-inline-flex mx-auto">
+                                            <img class="rounded-circle img-fluid wid-90 img-thumbnail"
+                                                 src=@data.businessInfo.companyLogo alt="companyLogo">
+                                            <i class="chat-badge bg-success me-2 mb-2"></i>
+                                        </div>
+                                        <h5 class="mb-0">@data.businessInfo.title</h5>
+
+
+
+
+                                    </div>
+                                </div>
+                                <div class="nav flex-column nav-pills list-group list-group-flush account-pills mb-0" id="user-set-tab"
+                                     role="tablist" aria-orientation="vertical">
+                                    <a class="nav-link list-group-item list-group-item-action active" id="user-set-profile-tab"
+                                       data-bs-toggle="pill" href="#user-set-profile" role="tab" aria-controls="user-set-profile"
+                                       aria-selected="true">
+                                        <span class="f-w-500"><i class="ph-duotone ph-user-circle m-r-10"></i>Profile Overview</span>
+                                    </a>
+                                    <a class="nav-link list-group-item list-group-item-action" id="user-set-business-tab"
+                                       data-bs-toggle="pill" href="#user-set-business" role="tab" aria-controls="user-set-business"
+                                       aria-selected="false">
+                                        <span class="f-w-500"><i class="ph-duotone ph-clipboard-text m-r-10"></i>Business Information</span>
+                                    </a>
+                                    <a class="nav-link list-group-item list-group-item-action" id="user-set-bankaccount-tab"
+                                       data-bs-toggle="pill" href="#user-set-bankaccount" role="tab" aria-controls="user-set-bankaccount"
+                                       aria-selected="false">
+                                        <span class="f-w-500"><i class="ph-duotone ph-notebook m-r-10"></i>Bank A/C Information</span>
+                                    </a>
+
+                                </div>
+                            </div>
+
+
+                        </div>
+                        <div class="col-lg-7 col-xxl-9">
+                            <div class="tab-content" id="user-set-tabContent">
+                                <div class="tab-pane fade show active" id="user-set-profile" role="tabpanel"
+                                     aria-labelledby="user-set-profile-tab">
+
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h5>Personal Details</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <ul class="list-group list-group-flush">
+                                                <li class="list-group-item px-0 pt-0">
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <p class="mb-1 text-muted">Full Name</p>
+                                                            <p class="mb-0">@data.personalInfo.fullName</p>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <p class="mb-1 text-muted">Father Name</p>
+                                                            <p class="mb-0">@data.personalInfo.fatherName</p>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                                <li class="list-group-item px-0">
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <p class="mb-1 text-muted">Gender</p>
+                                                            <p class="mb-0">@data.personalInfo.gender</p>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <p class="mb-1 text-muted">Date of Birth</p>
+                                                            <p class="mb-0">@data.personalInfo.dateOfBirth</p>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                                <li class="list-group-item px-0">
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <p class="mb-1 text-muted">Phone</p>
+                                                            <p class="mb-0">@data.personalInfo.phoneNumber</p>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <p class="mb-1 text-muted">Nid Number</p>
+                                                            <p class="mb-0">@data.personalInfo.nidNumber</p>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                                <li class="list-group-item px-0">
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <p class="mb-1 text-muted">Email</p>
+                                                            <p class="mb-0">@data.personalInfo.email</p>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <p class="mb-1 text-muted">Nid Pin</p>
+                                                            <p class="mb-0">@data.personalInfo.nidPIN</p>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                                <li class="list-group-item px-0">
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <p class="mb-1 text-muted">Present Address</p>
+                                                            <p class="mb-0">@data.personalInfo.address1</p>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <p class="mb-1 text-muted">Permanent Address</p>
+                                                            <p class="mb-0">@data.personalInfo.address2</p>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                                @*   <li class="list-group-item px-0 pb-0">
+                                            <p class="mb-1 text-muted">Company/ Shop Address</p>
+                                            <p class="mb-0">Street 110-B Kalians Bag, Dewan, M.P. New York</p>
+                                            </li> *@
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="tab-pane fade" id="user-set-business" role="tabpanel"
+                                     aria-labelledby="user-set-business-tab">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h5>Business Information</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <ul class="list-group list-group-flush">
+                                                <li class="list-group-item px-0 pt-0">
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <p class="mb-1 text-muted">Name of Organization</p>
+                                                            <p class="mb-0">@data.businessInfo.companyName</p>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <p class="mb-1 text-muted">Business Email</p>
+                                                            <p class="mb-0">@data.businessInfo.companyEmail</p>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                                <li class="list-group-item px-0">
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <p class="mb-1 text-muted">Business type</p>
+                                                            <p class="mb-0">@data.businessInfo.companyType</p>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <p class="mb-1 text-muted">Title</p>
+                                                            <p class="mb-0">@data.businessInfo.title</p>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                                <li class="list-group-item px-0">
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <p class="mb-1 text-muted">Business Website</p>
+                                                            <p class="mb-0">@data.businessInfo.companyWebsite</p>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <p class="mb-1 text-muted">Business Phone</p>
+                                                            <p class="mb-0">@data.businessInfo.companyPhone</p>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                                <li class="list-group-item px-0">
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <p class="mb-1 text-muted">Business Address 1</p>
+                                                            <p class="mb-0">@data.businessInfo.companyAddress1</p>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <p class="mb-1 text-muted">Business Address 2</p>
+                                                            <p class="mb-0">@data.businessInfo.companyAddress2</p>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                                <div class="tab-pane fade" id="user-set-bankaccount" role="tabpanel" aria-labelledby="user-set-bankaccount-tab">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h5>Bank Ac Information</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <ul class="list-group list-group-flush">
+                                                <li class="list-group-item px-0 pt-0">
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <p class="mb-1 text-muted">Name of Bank</p>
+                                                            <p class="mb-0">@data.bankInfo.bankName</p>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <p class="mb-1 text-muted">Bank A/C Name</p>
+                                                            <p class="mb-0">@data.bankInfo.bankAccountName</p>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                                <li class="list-group-item px-0">
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <p class="mb-1 text-muted">Account Number</p>
+                                                            <p class="mb-0">@data.bankInfo.bankAccountNo</p>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <p class="mb-1 text-muted">Branch</p>
+                                                            <p class="mb-0">@data.bankInfo.branch</p>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                                <li class="list-group-item px-0">
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <p class="mb-1 text-muted">Routing No</p>
+                                                            <p class="mb-0">@data.bankInfo.routingNo</p>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+            <!-- [ sample-page ] end -->
+        </div>
+        <!-- [ Main Content ] end -->
+    </div>
+</div>
+<!-- [ Main Content ] end -->
+@inject IUserService _userService
+@code {
+    [Inject] protected ToastService ToastService { get; set; } = default!;
+    private UserInfoResponseData? data;
+
+    protected override async void OnInitialized()
+    {
+        await GetInfo();
+    }
+    private async Task GetInfo()
+    {
+        var response = await _userService.GetUserInfo();
+        if (response.statusCode == 200)
+        {
+            data = response.data;
+            this.StateHasChanged();
+        }
+        else
+        {
+            ToastService.Notify(new(ToastType.Danger, $"{response.message}"));
+            this.StateHasChanged();
+        }
+    }
+}

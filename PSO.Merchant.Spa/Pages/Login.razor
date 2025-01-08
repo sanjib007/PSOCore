@@ -1,0 +1,88 @@
+﻿@page "/login"
+@using Microsoft.AspNetCore.Components.Authorization
+@layout EmptyLayout
+@inject NavigationManager NavManager
+@inject AuthenticationStateProvider AuthStateProvider
+@inject IUserService _userService
+<PageTitle>Login</PageTitle>
+
+<div class="auth-main v1">
+    <div class="auth-wrapper">
+        <div class="auth-form">
+            <div class="card my-5">
+                <div class="card-body">
+                    <div class="text-center mb-3">
+                        @* <img src="../assets/images/authentication/img-auth-login.png" alt="images" class="img-fluid mb-3"> *@
+                        <img src="logo.png" alt="images" class="img-fluid mb-3" width="80px">
+                        <h4 class="f-w-500 mb-1">Merchant Portal</h4>
+                    </div>
+                    <EditForm Model="model" OnValidSubmit="Submit">
+                        <DataAnnotationsValidator />
+                        <div class="mb-3">
+                            <InputText placeholder="User Name" class="form-control" @bind-Value=model.clientId />
+                            <ValidationMessage For="@(() => model.clientId)" />
+                        </div>
+                        <div class="mb-3">
+                            <InputText type="password" placeholder="Password" class="form-control" @bind-Value=model.clientSecret />
+                            <ValidationMessage For="@(() => model.clientSecret)" />
+                            @* <input type="password" class="form-control" id="floatingInput1" placeholder="Password"> *@
+                        </div>
+
+                        <div class="d-grid mt-4 mb-4">
+                            <button type="submit" class="btn btn-primary">Login</button>
+                        </div>
+                        @if (error != null)
+                        {
+                            <div class="alert alert-danger align-items-center text-center" role="alert">
+                                <div>
+                                    @error
+                                </div>
+                            </div>
+                        }
+                    </EditForm>
+
+             
+
+                </div>
+            </div>
+        </div>
+        <div class="auth-sidefooter">
+        </div>
+
+    </div>
+</div>
+
+
+@inject ILocalStorageService _localStoreService
+
+@code {
+    [Inject] protected ToastService ToastService { get; set; } = default!;
+    private string? error;
+    private LoginRequest model { get; set; } = new();
+    protected override async void OnInitialized()
+    {
+        // this.StateHasChanged();
+    }
+
+    private async Task Submit()
+    {
+        var response = await _userService.Login(model);
+        if (response.statusCode == 200)
+        {
+            await _localStoreService.SetItemAsync(Constant.AccessToken, response.data.accessToken);
+            await _localStoreService.SetItemAsync(Constant.RefreshToken, response.data.refreshToken);
+            await _localStoreService.SetItemAsync(Constant.FullName, response.data.fullName);
+            await AuthStateProvider.GetAuthenticationStateAsync();
+            NavManager.NavigateTo($"/");
+        }
+        else
+        {
+            ToastService.Notify(new(ToastType.Danger, $"{response.message}"));
+            // error = response.message;
+            this.StateHasChanged();
+        }
+    }
+
+
+
+}

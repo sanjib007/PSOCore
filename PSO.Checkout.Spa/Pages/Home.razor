@@ -1,0 +1,297 @@
+﻿@page "/"
+@page "/checkout"
+@using PSO.Checkout.Spa.Utility.Constant
+@using PSO.Checkout.Spa.Models.Response
+@inject ICheckoutService _checkoutService;
+@inject IConfiguration _configuration;
+@inject IJSRuntime JSRuntime
+@inject NavigationManager NavManager;
+<PageTitle>ETYMOLOGY Checkout</PageTitle>
+<link href="css/home.css" rel="stylesheet" />
+
+<style>
+    .hover-item {
+        background-color: #FFF;
+    }
+
+    .hover-item:hover {
+        background-color: inherit;
+    }
+
+</style>
+@if (error != null)
+{
+    <div class="alert alert-danger align-items-center text-center" role="alert">
+        <div>
+            @error
+        </div>
+    </div>
+}
+
+@if (response == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+
+
+    <div class="text-center border checkoutBody mt-5 shadow-lg _checkout-round">
+
+        <div class="checkout-header mt p-1">
+            <div class="position-relative hover-item">
+                <div class="position-absolute top-0 end-0" @onclick="GoBack" >
+                    <a>🗙</a>
+                </div>
+            </div>
+            <img src=@data.checkoutDetails.logo alt="logo" class="mt-3 mb-2 img-thumbnail border" style="width:18%">
+            <h6 style="color:white"> @data.checkoutDetails.merchantName</h6>
+        </div>
+
+        <div class="row p-3">
+            <div class="col" style="text-align: left;">
+                <table class="table table-sm table-bordered" style="margin-bottom:auto;">
+
+                    <tbody>
+                        <tr>
+
+                            <th scope="row"> &nbsp;Invoice</th>
+                            <td>@data.checkoutDetails.orderId</td>
+                        </tr>
+
+                        <tr>
+                            <th scope="row">&nbsp;Amount</th>
+                            <td>৳ @data.checkoutDetails.amount</td>
+                        </tr>   
+                        <tr>
+                            <th scope="row">Billing Address</th>
+                            <td>@data.checkoutDetails.billingAddress</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+        <div id="embed-target"> </div>
+
+        <ul class="nav nav-pills nav-justified shadow" id="pills-tab" role="tablist" style="background-color:#005bf24f">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home" aria-selected="true" style="font-size: small;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-credit-card-fill" viewBox="0 0 16 16">
+                        <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v1H0zm0 3v5a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7zm3 2h1a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1v-1a1 1 0 0 1 1-1" />
+                    </svg><br />CARDS
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-profile" type="button" role="tab" aria-controls="pills-profile" aria-selected="false" style="font-size: small;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-phone" viewBox="0 0 16 16">
+                        <path d="M11 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM5 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z" />
+                        <path d="M8 14a1 1 0 1 0 0-2 1 1 0 0 0 0 2" />
+                    </svg><br />MOBILE&nbsp;BANKING
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="pills-contact-tab" data-bs-toggle="pill" data-bs-target="#pills-contact" type="button" role="tab" aria-controls="pills-contact" aria-selected="false" style="font-size: small;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bank2" viewBox="0 0 16 16">
+                        <path d="M8.277.084a.5.5 0 0 0-.554 0l-7.5 5A.5.5 0 0 0 .5 6h1.875v7H1.5a.5.5 0 0 0 0 1h13a.5.5 0 1 0 0-1h-.875V6H15.5a.5.5 0 0 0 .277-.916zM12.375 6v7h-1.25V6zm-2.5 0v7h-1.25V6zm-2.5 0v7h-1.25V6zm-2.5 0v7h-1.25V6zM8 4a1 1 0 1 1 0-2 1 1 0 0 1 0 2M.5 15a.5.5 0 0 0 0 1h15a.5.5 0 1 0 0-1z" />
+                    </svg><br />NET&nbsp;BANKING
+                </button>
+            </li>
+        </ul>
+        <div class="tab-content mt-3" id="pills-tabContent">
+
+
+            <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+
+                <div class="radio-buttons">
+
+                    @foreach (var item in cardList)
+                    {
+                        <label class="custom-radio" @onclick="() => SelectChannel(item)">
+                            <input type="radio" name="radio">
+                            <span class="radio-btn">
+
+                                <div class="hobbies-icon">
+                                    <img src="channels/@item.logo">
+                                </div>
+                            </span>
+                        </label>
+                    }
+                </div>
+
+            </div>
+            <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
+
+                <div class="radio-buttons">
+                    @foreach (var item in mfsList)
+                    {
+                        <label class="custom-radio" @onclick="() => SelectChannel(item)">
+                            <input type="radio" name="radio">
+                            <span class="radio-btn">
+
+                                <div class="hobbies-icon">
+                                    <img src="channels/@item.logo">
+                                </div>
+                            </span>
+                        </label>
+                    }
+                </div>
+
+            </div>
+            <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">
+                <div class="radio-buttons">
+                    @foreach (var item in bankList)
+                    {
+                        <label class="custom-radio" @onclick="() => SelectChannel(item)">
+                            <input type="radio" name="radio">
+                            <span class="radio-btn">
+
+                                <div class="hobbies-icon">
+                                    <img src="channels/@item.logo">
+                                </div>
+                            </span>
+                        </label>
+                    }
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="row mt-5" style="text-align: left;">
+            <div class="col-12">
+                <p class="text-muted text-center" for="confirmCheckbox" style="font-size: .7rem;">Secured By <strong style="color:#0041ad">ETYMOLOGY</strong></p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 btn-group">
+                <button disabled="@IsDisabled" class="btn btn-success btn-lg btn-block rounded-0" style="background-color: #005BF2; border-color: #005BF2; " @onclick="Submit">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-hand-index" viewBox="0 0 16 16">
+                        <path d="M6.75 1a.75.75 0 0 1 .75.75V8a.5.5 0 0 0 1 0V5.467l.086-.004c.317-.012.637-.008.816.027.134.027.294.096.448.182.077.042.15.147.15.314V8a.5.5 0 1 0 1 0V6.435l.106-.01c.316-.024.584-.01.708.04.118.046.3.207.486.43.081.096.15.19.2.259V8.5a.5.5 0 0 0 1 0v-1h.342a1 1 0 0 1 .995 1.1l-.271 2.715a2.5 2.5 0 0 1-.317.991l-1.395 2.442a.5.5 0 0 1-.434.252H6.035a.5.5 0 0 1-.416-.223l-1.433-2.15a1.5 1.5 0 0 1-.243-.666l-.345-3.105a.5.5 0 0 1 .399-.546L5 8.11V9a.5.5 0 0 0 1 0V1.75A.75.75 0 0 1 6.75 1M8.5 4.466V1.75a1.75 1.75 0 1 0-3.5 0v5.34l-1.2.24a1.5 1.5 0 0 0-1.196 1.636l.345 3.106a2.5 2.5 0 0 0 .405 1.11l1.433 2.15A1.5 1.5 0 0 0 6.035 16h6.385a1.5 1.5 0 0 0 1.302-.756l1.395-2.441a3.5 3.5 0 0 0 .444-1.389l.271-2.715a2 2 0 0 0-1.99-2.199h-.581a5 5 0 0 0-.195-.248c-.191-.229-.51-.568-.88-.716-.364-.146-.846-.132-1.158-.108l-.132.012a1.26 1.26 0 0 0-.56-.642 2.6 2.6 0 0 0-.738-.288c-.31-.062-.739-.058-1.05-.046zm2.094 2.025" />
+                    </svg>
+                    Pay Now
+                </button>
+            </div>
+        </div>
+
+    </div>
+}
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+<script src="@mastercardScripts"></script>
+<script src="js/app.js"></script>
+
+@code {
+    [Inject] 
+    protected ToastService ToastService { get; set; } = default!;
+    [SupplyParameterFromQuery]
+    public string? identifier { get; set; }
+    private long channelTypeId;
+    private string bankCode;
+    private bool IsDisabled = true;
+    private string? error;
+
+    private string? mastercardScripts;
+    private GetIdentifierResponseData? data;
+    private GetIdentifierApiResponse? response;
+    private List<GetIdentifierApiResponsePaymentacceptlist>? bankList;
+    private List<GetIdentifierApiResponsePaymentacceptlist>? cardList;
+    private List<GetIdentifierApiResponsePaymentacceptlist>? mfsList;
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(identifier))
+            {
+                error = "Identifier missing";
+                this.StateHasChanged();
+            }
+            else
+            {
+                response = await _checkoutService.GetIdentifierDetails(identifier);
+                if (response.statusCode == 200)
+                {
+                    data = response.data;
+                    mfsList = data.paymentAcceptList.Where(e => e.accountType == AccountType.MFS.ToString()).ToList();
+                    cardList = data.paymentAcceptList.Where(e => e.accountType == AccountType.Card.ToString()).ToList();
+                    bankList = data.paymentAcceptList.Where(e => e.accountType == AccountType.Bank.ToString()).ToList();
+
+                    this.StateHasChanged();
+                }
+                else
+                {
+                    // ToastService.Notify(new(ToastType.Danger, $"{response.message}"));
+                    error = response.message;
+                    this.StateHasChanged();
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            error = ex.Message;
+            this.StateHasChanged();
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            mastercardScripts = _configuration.GetSection("AppConfig:MastercardCheckoutScripts").Value;
+            this.StateHasChanged();
+        }
+    }
+
+    private void SelectChannel(GetIdentifierApiResponsePaymentacceptlist data)
+    {
+        channelTypeId = data.channelTypeId;
+        bankCode = data.bankCode;
+        IsDisabled = false;
+        this.StateHasChanged();
+    }
+
+    private async Task Submit()
+    {
+        try
+        {
+
+
+            var response = await _checkoutService.InitateTransaction(identifier, channelTypeId);
+            if (response.statusCode == 200)
+            {
+                if (bankCode == BankCode.MasterCard)
+                {
+                    await JSRuntime.InvokeVoidAsync("MastercardRedirect", response.data.mastercardSessionId);
+                }
+                else
+                {
+                    if (response.data.isRedirect)
+                    {
+                        NavManager.NavigateTo($"{response.data.redirectUrl}");
+                    }
+                    if (response.data.isFormRedirect)
+                    {
+
+                        var parameters = response.data.formData;
+                        await JSRuntime.InvokeVoidAsync("FormSubmitWithRedirect", response.data.redirectUrl, response.data.formData);
+                    }
+                }
+            }
+            else
+            {
+                // error = response.message;
+                ToastService.Notify(new(ToastType.Danger, $"{response.message}"));
+            }
+        }
+        catch (Exception ex)
+        {
+            ToastService.Notify(new(ToastType.Danger, $"{ex.Message}"));
+            // error = ex.Message;
+        }
+    }
+
+    private async Task GoBack()
+    {
+        await JSRuntime.InvokeVoidAsync("history.back");
+    }
+}

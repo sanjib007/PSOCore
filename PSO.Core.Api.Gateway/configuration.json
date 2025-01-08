@@ -1,0 +1,31 @@
+{
+  "Routes": [
+    {
+      "UpstreamPathTemplate": "/Bank",
+      "UpstreamHttpMethod": [ "Get" ],
+      "DownstreamPathTemplate": "/api/v1/Bank/BankList",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "{AdminApi}"
+        }
+      ]
+    },
+    {
+      "UpstreamPathTemplate": "/BankListP",
+      "UpstreamHttpMethod": [ "Get" ],
+      "DownstreamPathTemplate": "/api/v1/Bank/BankList",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "{AdminApi}"
+        }
+      ]
+    }
+    
+    
+  ],
+  "GlobalConfiguration": {
+    "Hosts": {
+      "AdminApi": "https://staging-coreapsrv.tadlbd.com"
+    }
+  }
+}

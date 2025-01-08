@@ -1,0 +1,79 @@
+﻿@page "/"
+
+<PageTitle>Home</PageTitle>
+<!-- [ Main Content ] start -->
+<div class="pc-container">
+    <div class="pc-content">
+        @if (data == null)
+        {
+            <p><em>Loading...</em></p>
+        }
+        else
+        {
+            <!-- [ Main Content ] start -->
+            <div class="row">
+                <div class="col-md-4 col-sm-6">
+                    <div class="card statistics-card-1 overflow-hidden ">
+                        <div class="card-body">
+                            <img src="assets/images/widget/img-status-4.svg" alt="img" class="img-fluid img-bg">
+                            <h5 class="mb-4">Today Transaction Count</h5>
+                            <div class="d-flex align-items-center mt-3">
+                                <h3 class="f-w-300 d-flex align-items-center m-b-0"> @data.todayCount</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-6">
+                    <div class="card statistics-card-1 overflow-hidden ">
+                        <div class="card-body">
+                            <img src="../assets/images/widget/img-status-5.svg" alt="img" class="img-fluid img-bg">
+                            <h5 class="mb-4">Today Transaction Amount</h5>
+                            <div class="d-flex align-items-center mt-3">
+                                <h3 class="f-w-300 d-flex align-items-center m-b-0">৳ @data.todayAmount</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-12">
+                    <div class="card statistics-card-1 overflow-hidden  bg-brand-color-3">
+                        <div class="card-body">
+                            <img src="../assets/images/widget/img-status-6.svg" alt="img" class="img-fluid img-bg">
+                            <h5 class="mb-4 text-white">Today Refund Count</h5>
+                            <div class="d-flex align-items-center mt-3">
+                                <h3 class="text-white f-w-300 d-flex align-items-center m-b-0">@data.refundCount</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <!-- [ Main Content ] end -->
+        }
+    </div>
+</div>
+
+@inject ITransactionService _transactionService
+@code {
+    [Inject] protected ToastService ToastService { get; set; } = default!;
+    private DashbordReportResponseData? data;
+    protected override async void OnInitialized()
+    {
+        await GetInfo();
+    }
+
+    private async Task GetInfo()
+    {
+        var response = await _transactionService.DashbordReport();
+        if (response.statusCode == 200)
+        {
+            data = response.data;
+            this.StateHasChanged();
+        }
+        else
+        {
+            ToastService.Notify(new(ToastType.Danger, $"{response.message}"));
+            this.StateHasChanged();
+        }
+    }
+
+}

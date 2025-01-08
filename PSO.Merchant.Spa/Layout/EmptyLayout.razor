@@ -1,0 +1,10 @@
+﻿@inherits LayoutComponentBase
+
+<div class="main">
+    <div class="content px-4">
+        <SpinnerLoader />
+        @Body
+    </div>
+</div>
+
+<Toasts class="p-3" AutoHide="true" Delay="6000" Placement="ToastsPlacement.BottomCenter" />

@@ -1,0 +1,240 @@
+﻿@inherits LayoutComponentBase
+@inject NavigationManager NavManager
+@inject ILocalStorageService _localStorage
+@inject AuthenticationStateProvider AuthStateProvider
+@attribute [Authorize]
+
+@* https://html.phoenixcoded.net/light-able/bootstrap/application/account-profile.html *@
+
+
+@* ============================= new ================================ *@
+<nav class="pc-sidebar @sliderMenuCss @sliderMenuWebCss" tabindex="0">
+    <NavMenu />
+    @if (!string.IsNullOrEmpty(sliderMenuCss))
+    {
+        <div class="pc-menu-overlay" @onclick=ToggleMenu></div>
+    }
+</nav>
+<!-- [ Header Topbar ] start -->
+<header class="pc-header">
+    <div class="header-wrapper">
+        <!-- [Mobile Media Block] start -->
+        <div class="me-auto pc-mob-drp">
+            <ul class="list-unstyled">
+                <!-- ======= Menu collapse Icon ===== -->
+                <li class="pc-h-item pc-sidebar-collapse">
+                    <a @onclick=MenuToggleWeb class="pc-head-link ms-0" id="sidebar-hide">
+                        <i class="ti ti-menu-2"></i>
+                    </a>
+                </li>
+                <li class="pc-h-item pc-sidebar-popup">
+                    <a @onclick=ToggleMenu class="pc-head-link ms-0" id="mobile-collapse">
+                        <i class="ti ti-menu-2"></i>
+                    </a>
+                </li>
+
+
+            </ul>
+        </div>
+        <!-- [Mobile Media Block end] -->
+        <div class="ms-auto">
+            <ul class="list-unstyled">
+
+                <li class="dropdown pc-h-item">
+
+                    <div class="dropdown-menu dropdown-menu-end pc-h-dropdown">
+                        <a href="#!" class="dropdown-item">
+                            <i class="ph-duotone ph-user"></i>
+                            <span>My Account</span>
+                        </a>
+                        <a href="#!" class="dropdown-item">
+                            <i class="ph-duotone ph-gear"></i>
+                            <span>Settings</span>
+                        </a>
+                        <a href="#!" class="dropdown-item">
+                            <i class="ph-duotone ph-lifebuoy"></i>
+                            <span>Support</span>
+                        </a>
+                        <a href="#!" class="dropdown-item">
+                            <i class="ph-duotone ph-lock-key"></i>
+                            <span>Lock Screen</span>
+                        </a>
+                        <a href="#!" class="dropdown-item">
+                            <i class="ph-duotone ph-power"></i>
+                            <span>Logout</span>
+                        </a>
+                    </div>
+                </li>
+
+                <li class="dropdown pc-h-item header-user-profile" @onclick=ToggleProfile>
+                    <a class="pc-head-link dropdown-toggle arrow-none me-0"
+                       data-bs-toggle="dropdown"
+                       href="#"
+                       role="button"
+                       aria-haspopup="false"
+                       data-bs-auto-close="outside"
+                       aria-expanded="false">
+                        <img src="assets/images/user/avatar-2.jpg" alt="user-image" class="user-avtar" />
+                    </a>
+                    <div class="dropdown-menu dropdown-user-profile dropdown-menu-end pc-h-dropdown @profileCss">
+                        <div class="dropdown-header d-flex align-items-center justify-content-between">
+                            <h5 class="m-0">Profile</h5>
+                        </div>
+                        <div class="dropdown-body">
+                            <div class="profile-notification-scroll position-relative" style="max-height: calc(100vh - 225px)">
+                                <ul class="list-group list-group-flush w-100">
+                                    <li class="list-group-item">
+                                        <div class="d-flex align-items-center">
+                                            <div class="flex-shrink-0">
+                                                <img src="../assets/images/user/avatar-2.jpg" alt="user-image" class="wid-50 rounded-circle" />
+                                            </div>
+                                            <div class="flex-grow-1 mx-3">
+                                                <h5 class="mb-0">@fullName</h5>
+                                                @* <a class="link-primary" href="mailto:carson.darrin@company.io">carson.darrin@company.io</a> *@
+                                            </div>
+                                            @* <span class="badge bg-primary">PRO</span> *@
+                                        </div>
+                                    </li>
+
+                                    <li class="list-group-item">
+                                        <a href="account" class="dropdown-item">
+                                            <span class="d-flex align-items-center">
+                                                <i class="ph-duotone ph-user-circle"></i>
+                                                <span>Profile</span>
+                                            </span>
+                                        </a>
+                                        <a href="change-password" class="dropdown-item">
+                                            <span class="d-flex align-items-center">
+                                                <i class="ph-duotone ph-user-circle"></i>
+                                                <span>Change Password</span>
+                                            </span>
+                                        </a>
+                                        <a @onclick="Logout" class="dropdown-item">
+                                            <span class="d-flex align-items-center">
+                                                <i class="ph-duotone ph-power"></i>
+                                                <span>Logout</span>
+                                            </span>
+                                        </a>
+                                    </li>
+
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</header>
+<!-- [ Header ] end -->
+
+<SpinnerLoader />
+
+@Body
+
+
+<footer class="pc-footer">
+    <div class="footer-wrapper container-fluid">
+    </div>
+</footer>
+
+
+
+
+
+
+
+
+
+
+<Toasts class="p-3" AutoHide="true" Delay="6000" Placement="ToastsPlacement.BottomCenter" />
+
+
+@code {
+    string? profileCss;
+    string? sliderMenuCss;
+    string? sliderMenuWebCss;
+    string? fullName;
+    protected override async void OnInitialized()
+    {
+        fullName = await _localStorage.GetItemAsync<string>(Constant.FullName);
+        this.StateHasChanged();
+    }
+
+    private async Task Logout()
+    {
+        await _localStorage.RemoveItemAsync(Constant.AccessToken);
+        await _localStorage.RemoveItemAsync(Constant.RefreshToken);
+        await AuthStateProvider.GetAuthenticationStateAsync();
+        NavManager.NavigateTo($"/login");
+
+    }
+
+    private void ToggleMenu()
+    {
+        if (string.IsNullOrEmpty(sliderMenuCss))
+        {
+            sliderMenuCss = "mob-sidebar-active";
+        }
+        else
+        {
+            sliderMenuCss = "";
+        }
+    }
+    private void ClearMenu()
+    {
+        sliderMenuCss = "";
+        this.StateHasChanged();
+    }
+    private void MenuToggleWeb()
+    {
+        if (string.IsNullOrEmpty(sliderMenuWebCss))
+        {
+            sliderMenuWebCss = "pc-sidebar-hide";
+            this.StateHasChanged();
+        }
+        else
+        {
+            sliderMenuWebCss = "";
+            this.StateHasChanged();
+        }
+    }
+    private void ToggleProfile()
+    {
+        if (string.IsNullOrEmpty(profileCss))
+        {
+            profileCss = "show";
+
+        }
+        else
+        {
+            profileCss = "";
+        }
+    }
+
+
+
+    Sidebar sidebar;
+    IEnumerable<NavItem> navItems;
+
+    private async Task<SidebarDataProviderResult> SidebarDataProvider(SidebarDataProviderRequest request)
+    {
+        if (navItems is null)
+            navItems = GetNavItems();
+
+        return await Task.FromResult(request.ApplyTo(navItems));
+    }
+
+    private IEnumerable<NavItem> GetNavItems()
+    {
+        navItems = new List<NavItem>
+        {
+            new NavItem { Id = "1", Href = "/", IconName = IconName.HouseDoorFill, Text = "Home", Match=NavLinkMatch.All},
+            new NavItem { Id = "2", Href = "/account", IconName = IconName.PlusSquareFill, Text = "Account"},
+            new NavItem { Id = "3", Href = "/transactions", IconName = IconName.Table, Text = "Transactions"},
+        };
+
+        return navItems;
+    }
+
+}

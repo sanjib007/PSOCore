@@ -1,0 +1,6 @@
+@PSO.Core.Api.Gateway_HostAddress = http://localhost:5172
+
+GET {{PSO.Core.Api.Gateway_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

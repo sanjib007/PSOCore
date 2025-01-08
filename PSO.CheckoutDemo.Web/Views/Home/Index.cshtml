@@ -1,0 +1,325 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>E-Shop - Shopping Cart  </title>
+    <link rel="stylesheet" href="./css/style.css">
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+</head>
+<body>
+
+
+
+    <div id="finpay-paymentDiv" class="finpay-modal-wrapper"></div>
+    
+    <!-- partial:index.partial.html -->
+    <section class="cart_wrapper">
+        <div class="cart_lists">
+            <div class="cart_title">
+                <span class="material-icons-outlined">local_mall</span>
+                Your Shopping Cart
+            </div>
+            <hr />
+            <div class="cart_list_wrap">
+                <div class="cart_responsive">
+                    <div class="tr_item">
+                        <div class="td_item item_img">
+                            <img src="https://i.ibb.co/vQHXcYb/b68912b3426baa0b1f4c410a02174879.jpg" />
+                        </div>
+                        <div class="td_item item_name">
+                            <label class="main">Denim Jacket</label>
+                            <label class="sub">Ref. 007891987</label>
+                        </div>
+                        <div class="td_item item_color">
+                            <label>Blue</label>
+                        </div>
+                        <div class="td_item item_qty">
+            
+                        </div>
+                        <div class="td_item item_price">
+                            <label>৳ 14.00</label>
+                        </div>
+                        <div class="td_item item_remove">
+                            <span class="material-icons-outlined remove-btn">close</span>
+                        </div>
+                    </div>
+                    <div class="tr_item">
+                        <div class="td_item item_img">
+                            <img src="https://infinitymegamall.com/wp-content/uploads/2024/01/5.jpg" />
+                        </div>
+                        <div class="td_item item_name">
+                            <label class="main">Formal Jacket</label>
+                            <label class="sub">Ref. 007891987</label>
+                        </div>
+                        <div class="td_item item_color">
+                            <label>Grey</label>
+                        </div>
+                        <div class="td_item item_qty">
+                        </div>
+                        <div class="td_item item_price">
+                            <label>৳ 22.00</label>
+                        </div>
+                        <div class="td_item item_remove">
+                            <span class="material-icons-outlined remove-btn">close</span>
+                        </div>
+                    </div>
+                    <div class="tr_item">
+                        <div class="td_item item_img">
+                            <img src="https://infinitymegamall.com/wp-content/uploads/2023/04/39.jpg" />
+                        </div>
+                        <div class="td_item item_name">
+                            <label class="main">Formal Pant</label>
+                            <label class="sub">Ref. 007891987</label>
+                        </div>
+                        <div class="td_item item_color">
+                            <label>Grey</label>
+                        </div>
+                        <div class="td_item item_qty">
+                 
+                        </div>
+                        <div class="td_item item_price">
+                            <label>৳ 10.00</label>
+                        </div>
+                        <div class="td_item item_remove">
+                            <span class="material-icons-outlined remove-btn">close</span>
+                        </div>
+                    </div>
+                    <div class="tr_item">
+                        <div class="td_item item_img">
+                            <img src="https://i.ibb.co/R6rN96C/b5e11480e047426019842f1ebc019d52.jpg" />
+                        </div>
+                        <div class="td_item item_name">
+                            <label class="main">Denim Pant</label>
+                            <label class="sub">Ref. 007891987</label>
+                        </div>
+                        <div class="td_item item_color">
+                            <label>Blue</label>
+                        </div>
+                        <div class="td_item item_qty">
+                        </div>
+                        <div class="td_item item_price">
+                            <label>৳ 15.00</label>
+                        </div>
+                        <div class="td_item item_remove">
+                            <span class="material-icons-outlined remove-btn">close</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer">
+                    <div class="back_cart">
+                       @*  <a href="#back">
+                            <span class="material-icons-outlined">west</span>
+                            Back to Shop
+                        </a> *@
+                    </div>
+                    <div class="subtotal">
+                        @* <label>Total: </label> *@
+                        <strong><div id="totalAmount"></div> </strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="cart_details">
+            <div class="cart_title">
+                Checkout
+            </div>
+            <hr />
+            <div class="form_row">
+                <div class="form_group cart_type">
+                    <label class="input_label " style="">Select Payment Type</label>
+                    <br><br>
+                    <input type="radio" name="cartType" required id="master" checked />
+                    <label class="type master" title="Master" for="master">
+                        <img src="img/paymenGateway.jpg" alt="FinPay" style="width:275px;"> <div style="color: white;">ETYMOLOGY</div>
+                    </label>
+
+                    @* <input type="radio" name="cartType" required id="visa" />
+                    <label class="type visa" title="Visa" for="visa">
+                        <img src="bkash.png" alt="Girl in a jacket" style="width:40px;height:40px;"> <div style="color: white;">bKash</div>
+
+
+                    </label> *@
+                    
+                </div>
+
+                <button class="btn" id="btnPayment">
+                    Payment
+                </button>
+            </div>
+
+        </div>
+    </section>
+
+
+    <!-- partial -->
+    <script src="./js/script.js"></script>
+
+</body>
+</html>
+
+
+<script>
+
+    // submit
+    $(document).ready(function () {
+        let _totalAmount = 0;
+        // remove cart
+        // Add event listener to all remove buttons
+        const removeButtons = document.querySelectorAll('.remove-btn');
+        removeButtons.forEach(button => {
+            button.addEventListener('click', removeItem);
+        });
+
+        // Function to remove an item
+        function removeItem(event) {
+            const row = event.target.closest('.tr_item');
+            row.remove();
+            updateTotalAmount();
+        }
+        updateTotalAmount();
+        // Function to update total amount
+        function updateTotalAmount() {
+            let totalAmount = 0;
+            const itemPrices = document.querySelectorAll('.item_price label');
+            itemPrices.forEach(price => {
+                totalAmount += parseFloat(price.textContent.replace('৳ ', ''));
+            });
+            _totalAmount = totalAmount.toFixed(2);
+            document.getElementById('totalAmount').textContent = `Total Amount: ৳ ${totalAmount.toFixed(2)}`;
+        }
+
+
+
+
+        // submit
+        $("#btnPayment").click(function (e) {
+            // $('#openModal1').modal('show');
+
+
+
+            var originalButtonText = $('#btnConfirmAuthorize').text();
+
+            $('#btnPayment').html('Loading...');
+            $('#btnPayment').prop('disabled', true);
+
+            e.preventDefault();
+            //Serialize the form datas.
+            var data = {
+                // Amount: 20// $("#Identifier").val(),
+                Amount: _totalAmount
+
+            };
+
+            //to get alert popup
+            console.log('Submitting');
+            $.ajax({
+                url: "/Payment/Initate",
+                type: "POST",
+                dataType: 'json',
+                contentType: 'application/json; charset=utf-8',
+                data: JSON.stringify(data),
+                success: function (response) {
+                    console.log(response);
+                    // Handle successful response.
+                    if (response.httpStatusCode == 201 && response.apiResponseCode == "SAVE_SUCCESS") {
+                        window.location.href = response.data.redirectUrl;
+                        //var modal = document.getElementById('finpay-paymentDiv');
+                        // modal.style.opacity = 1;
+                        // modal.style.zIndex = 9999;
+                        // $('#finpay-paymentDiv').load(response.data.gatewayUrl);
+                    }
+                    else {
+                        alert(response.message);
+                    }
+                    // console.log(response);
+                },
+                failure: function (response) {
+                    console.log(response.responseText);
+                },
+                error: function (response) {
+                    console.log(response.responseText);
+                },
+                complete: function () {
+                    // Restore the original button text
+                    $('#btnPayment').html(originalButtonText);
+                    // Enable the button after the request is complete
+                    $('#btnPayment').prop('disabled', false);
+                    // Perform additional cleanup or final actions here
+                }
+            });
+
+
+        });
+
+
+        // otp submit
+        $("#btnConfirmOtp").click(function (e) {
+
+            var originalButtonText = $('#btnConfirmOtp').text();
+
+            $('#btnConfirmOtp').html('Loading...');
+            $('#btnConfirmOtp').prop('disabled', true);
+
+            e.preventDefault();
+            //Serialize the form datas.
+            var data = {
+                Identifier: $("#Identifier").val(),
+                Otp: $("#otp").val(),
+            };
+
+            //to get alert popup
+            console.log('Submitting');
+            $.ajax({
+                url: "/Checkout/SubmitOtp",
+                type: "POST",
+                dataType: 'json',
+                contentType: 'application/json; charset=utf-8',
+                data: JSON.stringify(data),
+                success: function (response) {
+                    console.log(response);
+                    // Handle successful response.
+                    if (response.statusCode == 200) {
+                        // $('#btnConfirmOtp').hide();
+                        // $('#btnConfirmOtp').show();
+                        window.location.href = response.data.redirectUrl;
+                    }
+                    else {
+                        setTimeout(function () {
+                            $('#message').toggle();
+                        }, 4000);
+                        $('#message').toggle();
+                        $('#message').html(response.message);
+                    }
+                    console.log(response);
+                },
+                failure: function (response) {
+                    console.log(response.responseText);
+                },
+                error: function (response) {
+                    console.log(response.responseText);
+                },
+                complete: function () {
+                    // Restore the original button text
+                    $('#btnConfirmOtp').html(originalButtonText);
+                    // Enable the button after the request is complete
+                    $('#btnConfirmOtp').prop('disabled', false);
+                    // Perform additional cleanup or final actions here
+                }
+            });
+        });
+
+        // Cancel
+        $("#btnCancel").click(function (e) {
+            window.location.href = $("#CancelURL").val();
+
+        });
+
+    });
+
+
+</script>

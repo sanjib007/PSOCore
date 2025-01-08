@@ -1,0 +1,29 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>FinPay - Shopping Cart  </title>
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+</head>
+<body>
+
+    @if (ViewBag.statusCode != "200")
+    {
+        <partial name="_partial_fail" />
+
+    }
+    else
+    {
+        <partial name="_partial_success" />
+
+    }
+    <script src="./js/script.js"></script>
+
+</body>
+</html>
+

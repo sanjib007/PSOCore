@@ -1,0 +1,127 @@
+{
+  "Routes": [
+    //VISA
+    {
+      "UpstreamPathTemplate": "/payment-aggregator-web/cancel",
+      "UpstreamHttpMethod": [ "Post" ],
+      "DownstreamPathTemplate": "/payment-aggregator-web/cancel",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "{CoreApi}"
+        }
+      ]
+    },
+    //VISA
+    {
+      "UpstreamPathTemplate": "/payment-aggregator-web/cs/approve",
+      "UpstreamHttpMethod": [ "Post" ],
+      "DownstreamPathTemplate": "/payment-aggregator-web/cs/approve",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "{CoreApi}"
+        }
+      ]
+    },
+    //Mastercard
+    {
+      "UpstreamPathTemplate": "/api/v1/mastercard-return",
+      "UpstreamHttpMethod": [ "Get" ],
+      "DownstreamPathTemplate": "/api/v1/mastercard-return",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "{CoreApi}"
+        }
+      ]
+    },
+    //nagad
+    {
+      "UpstreamPathTemplate": "/api/v1/nagad-confirm-return",
+      "UpstreamHttpMethod": [ "Get" ],
+      "DownstreamPathTemplate": "/api/v1/nagad-confirm-return",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "{CoreApi}"
+        }
+      ]
+    },
+
+    //merchant ecommerce
+    {
+      "UpstreamPathTemplate": "/api/v1/Checkout/GetIdentifier",
+      "UpstreamHttpMethod": [ "Get" ],
+      "DownstreamPathTemplate": "/api/v1/Checkout/GetIdentifier",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "{CoreApi}"
+        }
+      ]
+    },
+    {
+      "UpstreamPathTemplate": "/api/v1/Checkout/InitiateCheckoutTransaction",
+      "UpstreamHttpMethod": [ "Post" ],
+      "DownstreamPathTemplate": "/api/v1/Checkout/InitiateCheckoutTransaction",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "{CoreApi}"
+        }
+      ]
+    },
+    //checkout web
+    {
+      "UpstreamPathTemplate": "/api/v1/Checkout/Initiate",
+      "UpstreamHttpMethod": [ "Post" ],
+      "DownstreamPathTemplate": "/api/v1/Checkout/Initiate",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "{CoreApi}"
+        }
+      ]
+    },
+    { //merchant portal
+      "UpstreamPathTemplate": "/api/v1/MerchantReport/Transactions",
+      "UpstreamHttpMethod": [ "Get" ],
+      "DownstreamPathTemplate": "/api/v1/MerchantReport/Transactions",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "{CoreApi}"
+        }
+      ]
+    },
+    { //merchant portal
+      "UpstreamPathTemplate": "/api/v1/MerchantReport/DoVoid",
+      "UpstreamHttpMethod": [ "Post" ],
+      "DownstreamPathTemplate": "/api/v1/MerchantReport/DoVoid",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "{CoreApi}"
+        }
+      ]
+    },
+    { //merchant portal
+      "UpstreamPathTemplate": "/api/v1/MerchantReport/DoRefund",
+      "UpstreamHttpMethod": [ "Post" ],
+      "DownstreamPathTemplate": "/api/v1/MerchantReport/DoRefund",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "{CoreApi}"
+        }
+      ]
+    },
+    { //merchant portal
+      "UpstreamPathTemplate": "/api/v1/MerchantReport/SettlementRequest",
+      "UpstreamHttpMethod": [ "Post" ],
+      "DownstreamPathTemplate": "/api/v1/MerchantReport/SettlementRequest",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "{CoreApi}"
+        }
+      ]
+    }
+
+  ],
+  "GlobalConfiguration": {
+    "Hosts": {
+      "CoreApi": "https://localhost:7141"
+    }
+  }
+}

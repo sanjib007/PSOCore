@@ -1,0 +1,140 @@
+﻿
+<!-- [ Pre-loader ] End -->
+<!-- [ Sidebar Menu ] start -->
+@* <nav class="pc-sidebar mob-sidebar-active"> *@
+<div class="navbar-wrapper">
+    <div class="m-header">
+        <a href="" class="b-brand text-primary">
+            <!-- ========   Change your logo from here   ============ -->
+            <img src="logo.png" alt="logo image" class="logo-lg" width="30" />
+            <span class="badge bg-brand-color-2 rounded-pill ms-2 theme-version">Merchant Portal</span>
+        </a>
+    </div>
+    <div class="navbar-content">
+        <ul class="pc-navbar">
+            <li class="pc-item @GetActive("", NavLinkMatch.All)">
+                <a href="" class="pc-link">
+                    <span class="pc-micon">
+                        <i class="ph-duotone ph-gauge"></i>
+                    </span>
+                    <span class="pc-mtext">Dashboard</span>
+                </a>
+            </li>
+            <li class="pc-item @GetActive("account", NavLinkMatch.All)">
+                <a href="account" class="pc-link">
+                    <span class="pc-micon">
+                        <i class="ph-duotone ph-identification-card"></i>
+                    </span>
+                    <span class="pc-mtext">Account</span>
+                </a>
+            </li>
+            <li class="pc-item @GetActive("transactions", NavLinkMatch.All)">
+
+                <a href="transactions" class="pc-link">
+                    <span class="pc-micon">
+                        <i class="ph-duotone ph-database"></i>
+                    </span>
+                    <span class="pc-mtext">Transactions</span>
+                </a>
+            </li>
+            <li class="pc-item @GetActive("change-password", NavLinkMatch.All)">
+
+                <a href="change-password" class="pc-link">
+                    <span class="pc-micon">
+                        <i class="ph-duotone ph-database"></i>
+                    </span>
+                    <span class="pc-mtext">Change Password</span>
+                </a>
+            </li>
+
+
+
+        </ul>
+
+    </div>
+
+
+
+
+    <div class="card pc-user-card">
+        <div class="card-body">
+            <div class="d-flex align-items-center">
+                <div class="flex-shrink-0">
+                    <img src="../assets/images/user/avatar-1.jpg" alt="user-image" class="user-avtar wid-45 rounded-circle" />
+                </div>
+                <div class="flex-grow-1 ms-3 me-2">
+                    <h6 class="mb-0">@fullName</h6>
+                    <small>Administrator</small>
+                </div>
+               @*  <div class="dropdown">
+                    <a href="#"
+                       class="btn btn-icon btn-link-secondary avtar arrow-none dropdown-toggle"
+                       data-bs-toggle="dropdown"
+                       aria-expanded="false"
+                       data-bs-offset="0,20">
+                        <i class="ph-duotone ph-windows-logo"></i>
+                    </a>
+                    <div class="dropdown-menu">
+                        <ul>
+                            <li>
+                                <a class="pc-user-links">
+                                    <i class="ph-duotone ph-user"></i>
+                                    <span>My Account</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="pc-user-links">
+                                    <i class="ph-duotone ph-gear"></i>
+                                    <span>Settings</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="pc-user-links">
+                                    <i class="ph-duotone ph-lock-key"></i>
+                                    <span>Lock Screen</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="pc-user-links">
+                                    <i class="ph-duotone ph-power"></i>
+                                    <span>Logout</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div> *@
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- [ Sidebar Menu ] end -->
+@inject ILocalStorageService _localStorage
+@code {
+    private bool collapseNavMenu = true;
+    string? fullName;
+    [Inject]
+    NavigationManager NavigationManager { get; set; }
+
+    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+    protected override async void OnInitialized()
+    {
+        fullName = await _localStorage.GetItemAsync<string>(Constant.FullName);
+        this.StateHasChanged();
+        NavigationManager.LocationChanged += (s, e) => StateHasChanged();
+
+
+    }
+
+    string GetActive(string href, NavLinkMatch navLinkMatch = NavLinkMatch.Prefix) => IsActive(href, navLinkMatch) ? "active" : "";
+    bool IsActive(string href, NavLinkMatch navLinkMatch = NavLinkMatch.Prefix)
+    {
+        var relativePath = NavigationManager.ToBaseRelativePath(NavigationManager.Uri).ToLower();
+        return navLinkMatch == NavLinkMatch.All ? relativePath == href.ToLower() : relativePath.StartsWith(href.ToLower());
+    }
+}
