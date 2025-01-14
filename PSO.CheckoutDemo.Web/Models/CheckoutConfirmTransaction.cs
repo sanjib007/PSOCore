@@ -2,16 +2,10 @@
 {
     public class CheckoutConfirmTransactionRequest
     {
-        public string StatusCode { get; set; }
-        public string Message { get; set; }
-        public string TransactionId { get; set; }
-        public double TransactionAmount { get; set; }
-        public string TransactionStatus { get; set; }
-        public string TransactionOrderId { get; set; } 
-        public string ReferenceTransactionId { get; set; }
-        public string TransactionCompletionDateTime { get; set; }
-        public string Identifier { get; set; }
-        public string TransactionCurrencyCode { get; set; }
-        public string TransactionType { get; set; }
+        public string status { get; set; }
+        public string message { get; set; }
+        public string transactionTrackingNo { get; set; }
+        public double amount { get; set; }
+        public string transactionDate { get; set; }
     }
 }

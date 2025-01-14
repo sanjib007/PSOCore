@@ -31,20 +31,18 @@ namespace PSO.CheckoutDemo.Web.Controllers
         {
             return View();
         }
-        [HttpPost("checkout/Confirm")]
+        [HttpGet("checkout/Confirm")]
         //[Route("checkout/Confirm")]
         //public IActionResult checkout_Confirm(string statusCode, string message, decimal amount, string transactionId, string referenceId)
-        public IActionResult checkout_Confirm([FromForm] CheckoutConfirmTransactionRequest request)
+        public IActionResult checkout_Confirm([FromQuery] CheckoutConfirmTransactionRequest request)
         {
             // need to validate by referenceId
 
-            ViewBag.statusCode = request.StatusCode;
-            ViewBag.message = request.Message;
-            ViewBag.transactionId = request.TransactionId;
-            ViewBag.referenceId = request.ReferenceTransactionId;
-            ViewBag.orderId = request.TransactionOrderId;
-            ViewBag.amount = request.TransactionAmount;
-            ViewBag.currency = request.TransactionCurrencyCode;
+            ViewBag.status = request.status;
+            ViewBag.message = request.message;
+            ViewBag.transactionId = request.transactionTrackingNo;
+            ViewBag.amount = request.amount;
+            ViewBag.transactionDate = request.transactionDate;
             return View();
         }
         #region Finpay
